@@ -5,6 +5,7 @@ import com.v1ct04.ces22.lagbackup.backup.model.BackupDiff;
 import com.v1ct04.ces22.lagbackup.backup.model.BackupDiffFolder;
 import com.v1ct04.ces22.lagbackup.backup.model.BackupFile;
 import com.v1ct04.ces22.lagbackup.backup.model.ModificationType;
+import com.v1ct04.ces22.lagbackup.concurrent.Parallel;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressPublisher;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressUpdate;
 
@@ -41,16 +42,17 @@ public class BackupRestoreTransaction implements BackupTransaction<Void, Progres
                 }
         }
 
-        FileProgressPublisher fileProgressPublisher =
+        final FileProgressPublisher fileProgressPublisher =
             new FileProgressPublisher("Restaurando...", filesToCopy.size(), progressPublisher);
-        for (Map.Entry<Path, Path> entry : filesToCopy.entrySet()) {
-            if (Thread.interrupted())
-                throw new InterruptedException();
-            fileProgressPublisher.publishProgress(entry.getValue());
-            Files.createDirectories(entry.getValue().getParent());
-            Files.copy(entry.getKey(), entry.getValue(),
-                StandardCopyOption.REPLACE_EXISTING, ExtendedCopyOption.INTERRUPTIBLE);
-        }
+        Parallel.forEach(filesToCopy.entrySet(), new Parallel.Operation<Map.Entry<Path, Path>>() {
+            @Override
+            public void Do(Map.Entry<Path, Path> entry) throws Exception {
+                fileProgressPublisher.publishProgress(entry.getValue());
+                Files.createDirectories(entry.getValue().getParent());
+                Files.copy(entry.getKey(), entry.getValue(),
+                    StandardCopyOption.REPLACE_EXISTING, ExtendedCopyOption.INTERRUPTIBLE);
+            }
+        });
         return null;
     }
 
