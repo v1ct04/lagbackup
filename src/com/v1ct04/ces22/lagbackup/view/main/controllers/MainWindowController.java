@@ -208,7 +208,7 @@ public class MainWindowController implements Initializable {
         }
 
         @Override
-        public void onFXThreadFailure(Exception throwable) {
+        public void onFXThreadFailure(Throwable throwable) {
             mLoadingBackupIndicator.setVisible(false);
             if (!(throwable instanceof InterruptedException)) {
                 FXDialog.showErrorDialog(mStage, "Erro ao carregar backup", throwable);
@@ -224,7 +224,7 @@ public class MainWindowController implements Initializable {
         }
 
         @Override
-        public void onFXThreadFailure(Exception throwable) {
+        public void onFXThreadFailure(Throwable throwable) {
             FXDialog.showErrorDialog(mStage, "Erro ao excluir backup", throwable);
             FXDialog.showMessageDialog(mStage, "Erro ao excluir backup", "Houve um erro ao " +
                 "tentar excluir o backup, apague o arquivo " + mBackup.get().getBackupFile() +

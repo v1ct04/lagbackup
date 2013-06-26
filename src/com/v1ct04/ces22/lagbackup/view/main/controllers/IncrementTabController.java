@@ -85,7 +85,7 @@ public class IncrementTabController implements Initializable, SubController<Main
         }
 
         @Override
-        public void onFXThreadFailure(Exception throwable) {
+        public void onFXThreadFailure(Throwable throwable) {
             if (!(throwable instanceof InterruptedException)) {
                 FXDialog.showErrorDialog(mMainWindowController.getStage(), "Erro ao incrementar backup", throwable);
                 throwable.printStackTrace();

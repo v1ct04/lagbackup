@@ -2,37 +2,35 @@ package com.v1ct04.ces22.lagbackup.concurrent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public abstract class AsyncTask<ReturnType, ProgressType> extends Thread
-    implements ProgressPublisher<ProgressType> {
+public abstract class AsyncTask<ReturnType, ProgressType>
+        implements ProgressPublisher<ProgressType> {
+
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     private List<OnProgressListener<ProgressType>> mProgressListeners = new ArrayList<>();
     private List<TaskCompletionListener<ReturnType>> mTaskCompletionListeners = new ArrayList<>();
 
-    protected abstract ReturnType doInBackground() throws Throwable;
+    private Future mRunningTask;
 
     private ReturnType mSuccessfulResult;
-    private Exception mExceptionThrown;
+    private Throwable mFailureThrown;
 
-    @Override
-    public void run() {
-        try {
-            ReturnType result = doInBackground();
-            synchronized (this) {
-                mSuccessfulResult = result;
-                for (TaskCompletionListener<ReturnType> listener : mTaskCompletionListeners)
-                    listener.onSuccess(mSuccessfulResult);
-            }
-        } catch (Exception e) {
-            synchronized (this) {
-                mExceptionThrown = e;
-                for (TaskCompletionListener listener : mTaskCompletionListeners)
-                    listener.onFailure(mExceptionThrown);
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+    public void start() {
+        if (mRunningTask != null)
+            throw new IllegalStateException("AsyncTask has already been started.");
+        mRunningTask = EXECUTOR_SERVICE.submit(new TaskRunnable());
     }
+
+    public void cancel() {
+        if (mRunningTask != null)
+            mRunningTask.cancel(true);
+    }
+
+    protected abstract ReturnType doInBackground() throws Throwable;
 
     public synchronized void addProgressListener(OnProgressListener<ProgressType> listener) {
         mProgressListeners.add(listener);
@@ -42,8 +40,8 @@ public abstract class AsyncTask<ReturnType, ProgressType> extends Thread
         mTaskCompletionListeners.add(listener);
         if (mSuccessfulResult != null)
             listener.onSuccess(mSuccessfulResult);
-        else if (mExceptionThrown != null)
-            listener.onFailure(mExceptionThrown);
+        else if (mFailureThrown != null)
+            listener.onFailure(mFailureThrown);
     }
 
     @Override
@@ -57,8 +55,28 @@ public abstract class AsyncTask<ReturnType, ProgressType> extends Thread
     }
 
     public interface TaskCompletionListener<ReturnType> {
-        public void onSuccess(ReturnType returnType);
+        public void onSuccess(ReturnType result);
 
-        public void onFailure(Exception throwable);
+        public void onFailure(Throwable throwable);
+    }
+
+    private class TaskRunnable implements Runnable {
+        @Override
+        public void run() {
+            try {
+                ReturnType result = doInBackground();
+                synchronized (this) {
+                    mSuccessfulResult = result;
+                    for (TaskCompletionListener<ReturnType> listener : mTaskCompletionListeners)
+                        listener.onSuccess(mSuccessfulResult);
+                }
+            } catch (Throwable t) {
+                synchronized (this) {
+                    mFailureThrown = t;
+                    for (TaskCompletionListener<ReturnType> listener : mTaskCompletionListeners)
+                        listener.onFailure(mFailureThrown);
+                }
+            }
+        }
     }
 }

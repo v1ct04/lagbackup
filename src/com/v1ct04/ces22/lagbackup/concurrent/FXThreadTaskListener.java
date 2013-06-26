@@ -6,18 +6,18 @@ public class FXThreadTaskListener<Type, ProgressType> extends SimpleTaskCompleti
         implements AsyncTask.OnProgressListener<ProgressType> {
 
     @Override
-    public final void onSuccess(final Type o) {
+    public final void onSuccess(final Type result) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                FXThreadTaskListener.super.onSuccess(o);
-                onFXThreadSuccess(o);
+                FXThreadTaskListener.super.onSuccess(result);
+                onFXThreadSuccess(result);
             }
         });
     }
 
     @Override
-    public final void onFailure(final Exception throwable) {
+    public final void onFailure(final Throwable throwable) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -39,7 +39,7 @@ public class FXThreadTaskListener<Type, ProgressType> extends SimpleTaskCompleti
 
     public void onFXThreadSuccess(Type o) {}
 
-    public void onFXThreadFailure(Exception throwable) {}
+    public void onFXThreadFailure(Throwable throwable) {}
 
     public void onFXThreadProgressUpdate(ProgressType value) {}
 }

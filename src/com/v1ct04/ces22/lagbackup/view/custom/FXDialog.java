@@ -106,7 +106,7 @@ public class FXDialog {
                     if (showConfirmDialog(window, "Cancelar", "Tem certeza que deseja cancelar?")) {
                         messageLabel.setText("Cancelando...");
                         ((Button) actionEvent.getSource()).setDisable(true);
-                        task.interrupt();
+                        task.cancel();
                     }
                 }
             }).visible(cancelable).build();

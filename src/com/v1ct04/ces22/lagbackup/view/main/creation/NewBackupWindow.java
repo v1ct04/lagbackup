@@ -115,7 +115,7 @@ public class NewBackupWindow implements Initializable {
         }
 
         @Override
-        public void onFXThreadFailure(Exception throwable) {
+        public void onFXThreadFailure(Throwable throwable) {
             if (!(throwable instanceof InterruptedException)) {
                 FXDialog.showErrorDialog(mStage, "Erro ao criar backup", throwable);
                 throwable.printStackTrace();

@@ -163,7 +163,7 @@ public class RestoreTabController implements Initializable, SubController<MainWi
 
     private class BackupRestoreTaskListener extends FXThreadTaskListener<Void, ProgressUpdate> {
         @Override
-        public void onFXThreadFailure(Exception throwable) {
+        public void onFXThreadFailure(Throwable throwable) {
             if (!(throwable instanceof InterruptedException)) {
                 FXDialog.showErrorDialog(mMainWindowController.getStage(),
                     "Erro ao restaurar backup", throwable);
