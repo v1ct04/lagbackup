@@ -74,9 +74,9 @@
             </Label>
           </children>
         </VBox>
-        <Label text="Lag Backup" textAlignment="LEFT" textFill="#040033" wrapText="false" StackPane.alignment="TOP_RIGHT">
+        <Label text="Lag Backup" textAlignment="LEFT" textFill="#bfbfbf" wrapText="false" StackPane.alignment="TOP_RIGHT">
           <effect>
-            <DropShadow />
+            <DropShadow height="11.0" radius="5.0" width="11.0" />
           </effect>
           <font>
             <Font name="Tahoma Bold" size="16.0" />

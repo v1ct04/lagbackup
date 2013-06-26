@@ -5,7 +5,7 @@ import com.v1ct04.ces22.lagbackup.backup.model.BackupDiff;
 import com.v1ct04.ces22.lagbackup.backup.tasks.RestoreBackupTask;
 import com.v1ct04.ces22.lagbackup.concurrent.FXThreadTaskListener;
 import com.v1ct04.ces22.lagbackup.view.custom.FXDialog;
-import com.v1ct04.ces22.lagbackup.view.custom.FolderAssociationView;
+import com.v1ct04.ces22.lagbackup.view.custom.FileChooseElement;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressUpdate;
 import com.v1ct04.ces22.lagbackup.view.custom.ScenePagerController;
 import javafx.beans.property.ObjectProperty;
@@ -102,8 +102,8 @@ public class RestoreTabController implements Initializable, SubController<MainWi
                 List<Node> children = mRestoreFolderDestinationContainer.getChildren();
                 children.clear();
                 for (Path path : mRestoreFoldersListView.getSelectionModel().getSelectedItems()) {
-                    FolderAssociationView chooser = new FolderAssociationView(mDirectoryChooser);
-                    chooser.setKeyFolder(path);
+                    FileChooseElement<Path> chooser = new FileChooseElement<>(mDirectoryChooser);
+                    chooser.setKeyObject(path);
                     chooser.setChosenFile(path);
                     children.add(chooser);
                 }
@@ -124,9 +124,9 @@ public class RestoreTabController implements Initializable, SubController<MainWi
         boolean askConfirmation = false;
         Map<Path, Path> backupToDestination = new HashMap<Path, Path>();
         for (Node node : mRestoreFolderDestinationContainer.getChildren()) {
-            if (node instanceof FolderAssociationView) {
-                Path key = ((FolderAssociationView) node).getKeyFolder();
-                Path chosen = ((FolderAssociationView) node).getChosenFolder();
+            if (node instanceof FileChooseElement) {
+                Path key = (Path) ((FileChooseElement)node).getKeyObject();
+                Path chosen = ((FileChooseElement) node).getChosenFile();
                 backupToDestination.put(key, chosen);
                 if (Files.exists(chosen) && Files.isDirectory(chosen) &&
                     Files.newDirectoryStream(chosen).iterator().hasNext()) {

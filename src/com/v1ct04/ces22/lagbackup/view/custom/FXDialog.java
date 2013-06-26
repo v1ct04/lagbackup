@@ -95,7 +95,10 @@ public class FXDialog {
         final Stage dialogStage = createDefaultStage(window, title);
         setNotCloseable(dialogStage);
 
-        final Label messageLabel = new Label("...");
+        final Label messageLabel = LabelBuilder.create()
+            .text("...")
+            .textOverrun(OverrunStyle.CENTER_ELLIPSIS)
+            .build();
         final ProgressBar progressBar = new ProgressBar(0);
         progressBar.setPrefWidth(400);
         Button cancelButton = ButtonBuilder.create()
