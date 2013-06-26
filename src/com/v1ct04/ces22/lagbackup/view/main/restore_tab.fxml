@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="Content" fx:id="mRestorePagerParent" minHeight="0.0" minWidth="0.0" prefHeight="545.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.v1ct04.ces22.lagbackup.view.main.controllers.RestoreTabController">
+  <children>
+    <HBox fx:id="mRestoreHBox" prefHeight="377.0" prefWidth="0.0" translateX="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <AnchorPane minWidth="-Infinity" prefWidth="800.0">
+          <children>
+            <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <Button fx:id="mChooseBackupButton" mnemonicParsing="false" onAction="#nextRestorePage" text="-&gt;" StackPane.alignment="CENTER_RIGHT" />
+              </children>
+            </StackPane>
+            <Label text="Selecione as pastas a serem restauradas:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+              <font>
+                <Font size="14.0" fx:id="x1" />
+              </font>
+            </Label>
+            <ListView fx:id="mRestoreFoldersListView" prefHeight="245.0" prefWidth="440.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="35.0" />
+            <Button fx:id="mSelectAllFoldersButton" mnemonicParsing="false" onAction="#selectAllFolders" text="Selecionar tudo" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+          </children>
+        </AnchorPane>
+        <AnchorPane minWidth="-Infinity" prefHeight="-1.0" prefWidth="800.0">
+          <children>
+            <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <Button mnemonicParsing="false" onAction="#previousRestorePage" text="&lt;-" StackPane.alignment="CENTER_LEFT" />
+                <Button fx:id="mChooseDestinationButton" mnemonicParsing="false" onAction="#nextRestorePage" text="-&gt;" StackPane.alignment="CENTER_RIGHT" />
+              </children>
+            </StackPane>
+            <Label font="$x1" text="Escolha a data para quando restaurar:" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="14.0" />
+            <ListView fx:id="mRestoreDiffListView" prefHeight="278.0" prefWidth="396.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="35.0" />
+          </children>
+        </AnchorPane>
+        <AnchorPane minWidth="-Infinity" prefHeight="-1.0" prefWidth="800.0">
+          <children>
+            <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <Button mnemonicParsing="false" onAction="#previousRestorePage" text="&lt;-" StackPane.alignment="CENTER_LEFT" />
+              </children>
+            </StackPane>
+            <Label font="$x1" text="Escolha onde restaurar cada uma das pastas" AnchorPane.leftAnchor="48.0" AnchorPane.topAnchor="14.0" />
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" hmin="0.0" hvalue="0.0" pannable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="35.0">
+              <content>
+                <VBox fx:id="mRestoreFolderDestinationContainer" fillWidth="true" maxHeight="-1.0" maxWidth="1.7976931348623157E308" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0">
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </padding>
+                </VBox>
+              </content>
+            </ScrollPane>
+            <Button mnemonicParsing="false" onAction="#restoreBackup" text="Restaurar" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="20.0" />
+          </children>
+        </AnchorPane>
+      </children>
+    </HBox>
+  </children>
+</AnchorPane>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="545.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.v1ct04.ces22.lagbackup.view.main.controllers.IncrementTabController">
+  <children>
+    <Label text="Selecione as pastas cujos backups devem ser incrementados" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+      <font>
+        <Font size="14.0" fx:id="x1" />
+      </font>
+    </Label>
+    <ListView id="mFolderListView" fx:id="mBackupIncrementListView" prefHeight="261.0" prefWidth="446.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="35.0" />
+    <Button id="mSelectAllFoldersButton" mnemonicParsing="false" onAction="#selectIncrementAllFolders" text="Selecionar tudo" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+    <Button fx:id="mIncrementButton" mnemonicParsing="false" onAction="#incrementBackup" text="Incrementar" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+  </children>
+</AnchorPane>

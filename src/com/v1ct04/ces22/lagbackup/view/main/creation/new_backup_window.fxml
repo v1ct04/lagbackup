@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.v1ct04.ces22.lagbackup.view.main.creation.NewBackupWindow">
+    <children>
+        <ListView fx:id="mBackupFoldersListView" prefHeight="303.0" prefWidth="272.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0" />
+        <HBox fillHeight="true" prefHeight="-1.0" prefWidth="-1.0" spacing="20.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="15.0">
+            <children>
+                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeSelectedFolders" prefWidth="30.0" text="-" />
+                <Button id="mAddFolderButton" mnemonicParsing="false" onAction="#addNewFolder" prefWidth="30.0" text="+" />
+            </children>
+        </HBox>
+        <Button fx:id="mCreateBackupButton" mnemonicParsing="false" onAction="#createBackup" text="Criar Backup" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+        <Button mnemonicParsing="false" onAction="#cancelCreation" text="Cancelar" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+        <AnchorPane fx:id="mFileChooserHolder" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+    </children>
+</AnchorPane>
