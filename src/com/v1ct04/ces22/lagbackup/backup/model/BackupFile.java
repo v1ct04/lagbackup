@@ -23,18 +23,14 @@ public class BackupFile {
     }
 
     public static BackupFile incrementBackupFile(BackupFile backupFile, int newDiffId) {
-        if (!backupFile.getOriginalFile().toFile().exists()) {
-            return new BackupFile(ModificationType.DELETED,
-                backupFile.getOriginalFile(),
-                backupFile.getBackupFile(),
-                newDiffId);
-        } else if (backupFile.getModificationType() == ModificationType.DELETED) {
-            return new BackupFile(ModificationType.CREATED,
-                backupFile.getOriginalFile(),
-                backupFile.getBackupFile(),
-                newDiffId);
-        }
-        return new BackupFile(ModificationType.MODIFIED,
+        ModificationType modType;
+        if (!backupFile.getOriginalFile().toFile().exists())
+            modType = ModificationType.DELETED;
+        else if (backupFile.getModificationType() == ModificationType.DELETED)
+            modType = ModificationType.CREATED;
+        else
+            modType = ModificationType.MODIFIED;
+        return new BackupFile(modType,
             backupFile.getOriginalFile(),
             backupFile.getBackupFile(),
             newDiffId);
