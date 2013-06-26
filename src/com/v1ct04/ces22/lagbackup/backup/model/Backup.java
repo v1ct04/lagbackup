@@ -4,13 +4,13 @@ import com.v1ct04.ces22.lagbackup.backup.exception.BackupException;
 import com.v1ct04.ces22.lagbackup.backup.transactions.BackupDeleteTransaction;
 import com.v1ct04.ces22.lagbackup.backup.transactions.BackupIncrementTransaction;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressPublisher;
-import com.v1ct04.ces22.lagbackup.util.FileUtils;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressUpdate;
+import com.v1ct04.ces22.lagbackup.util.FileUtils;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.text.ParseException;
 import java.util.*;
 
 public class Backup {
@@ -24,29 +24,29 @@ public class Backup {
     private Map<Path, String> mOriginalFolderToBackupName = new HashMap<>();
     private List<BackupDiff> mBackupDiffs = new LinkedList<>();
 
-    public static Backup loadBackup(Path backupFile)
-            throws IOException, ParseException, BackupException, InterruptedException {
-        Scanner scanner = new Scanner(backupFile);
-        Backup backup = new Backup(backupFile,
-            FileUtils.resolvePath(backupFile, scanner.nextLine()));
-        if (!Files.exists(backup.getParentBackupFolder()))
-            throw new BackupException("Pasta de armazenamento do backup " +
-                backup.getParentBackupFolder().getFileName() + " foi deletada!");
-        while (scanner.findInLine(BACKUP_SECTION_DIVIDER) == null)
-            backup.addBackupFolder(scanner.next(), scanner.nextLine().substring(1));
-        scanner.nextLine();
+    public static Backup loadBackup(Path backupFile) throws Exception {
+        try (Scanner scanner = new Scanner(backupFile, StandardCharsets.UTF_8.name())) {
+            Backup backup = new Backup(backupFile,
+                FileUtils.resolvePath(backupFile, scanner.nextLine()));
+            if (!Files.exists(backup.getParentBackupFolder()))
+                throw new BackupException("Pasta de armazenamento do backup " +
+                    backup.getParentBackupFolder().getFileName() + " foi deletada!");
+            while (scanner.findInLine(BACKUP_SECTION_DIVIDER) == null)
+                backup.addBackupFolder(scanner.next(), scanner.nextLine().substring(1));
+            scanner.nextLine();
 
-        BackupDiff previousDiff = null;
-        while (scanner.hasNext()) {
-            BackupDiff backupDiff = BackupDiff.parseDiff(backup, previousDiff, scanner);
-            backup.mBackupDiffs.add(backupDiff.getDiffId(), backupDiff);
-            previousDiff = backupDiff;
+            BackupDiff previousDiff = null;
+            while (scanner.hasNext()) {
+                BackupDiff backupDiff = BackupDiff.parseDiff(backup, previousDiff, scanner);
+                backup.mBackupDiffs.add(backupDiff.getDiffId(), backupDiff);
+                previousDiff = backupDiff;
+            }
+            return backup;
         }
-        return backup;
     }
 
     public static Backup createBackup(Path backupFile, Collection<Path> backedUpFolders)
-            throws IOException, BackupException {
+            throws Exception {
         if (Files.exists(backupFile, LinkOption.NOFOLLOW_LINKS)) {
             throw new BackupException("Arquivo de backup já existe.");
         }
@@ -67,7 +67,7 @@ public class Backup {
         String fileName = backupFile.getFileName().toString().toLowerCase();
         while (fileName.startsWith("."))
             fileName = fileName.substring(1);
-        fileName = fileName.replaceFirst("\\.lkg$", "");
+        fileName = fileName.replaceAll("\\.lkp$", "");
         return "." + fileName + "_store";
     }
 
@@ -152,18 +152,21 @@ public class Backup {
     }
 
     public void saveBackupFile() throws IOException {
-        PrintStream printStream = new PrintStream(
-            Files.newOutputStream(mBackupFile, StandardOpenOption.CREATE));
-        printStream.println(mBackupFile.relativize(mParentBackupFolder));
-        for (Map.Entry<String, Path> backupFolder : mBackupFolderNameToOriginal.entrySet()) {
-            printStream.printf("%s %s\n", backupFolder.getKey(), backupFolder.getValue());
+        try (PrintStream printStream = new PrintStream(
+                    Files.newOutputStream(mBackupFile, StandardOpenOption.CREATE),
+                    false,
+                    StandardCharsets.UTF_8.name())) {
+
+            printStream.println(mBackupFile.relativize(mParentBackupFolder));
+            for (Map.Entry<String, Path> backupFolder : mBackupFolderNameToOriginal.entrySet()) {
+                printStream.printf("%s %s\n", backupFolder.getKey(), backupFolder.getValue());
+            }
+            printStream.println(BACKUP_SECTION_DIVIDER);
+            for (BackupDiff backupDiff : mBackupDiffs) {
+                backupDiff.print(printStream);
+            }
+            printStream.flush();
         }
-        printStream.println(BACKUP_SECTION_DIVIDER);
-        for (BackupDiff backupDiff : mBackupDiffs) {
-            backupDiff.print(printStream);
-        }
-        printStream.flush();
-        printStream.close();
     }
 
     // End of Public API

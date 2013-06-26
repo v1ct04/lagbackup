@@ -8,8 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
 public class BackupApplication extends Application {
 
     @Override
@@ -26,7 +24,6 @@ public class BackupApplication extends Application {
     }
 
     public static void main(String[] args) {
-        Locale.setDefault(new Locale("pt", "BR"));
         launch(args);
     }
 }
