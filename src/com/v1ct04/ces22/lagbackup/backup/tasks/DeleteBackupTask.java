@@ -4,7 +4,7 @@ import com.v1ct04.ces22.lagbackup.backup.model.Backup;
 import com.v1ct04.ces22.lagbackup.concurrent.AsyncTask;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressUpdate;
 
-public class DeleteBackupTask extends AsyncTask<Void, ProgressUpdate> {
+public class DeleteBackupTask extends AsyncTask<Boolean, ProgressUpdate> {
 
     private final Backup mBackup;
 
@@ -13,9 +13,8 @@ public class DeleteBackupTask extends AsyncTask<Void, ProgressUpdate> {
     }
 
     @Override
-    protected Void doInBackground() throws Throwable {
+    protected Boolean doInBackground() throws Throwable {
         publishProgress(new ProgressUpdate("Inicializando...", 0));
-        mBackup.deleteAll().commit(this);
-        return null;
+        return mBackup.deleteAll().commit(this);
     }
 }

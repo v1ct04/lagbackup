@@ -217,9 +217,19 @@ public class MainWindowController implements Initializable {
         }
     }
 
-    private class BackupCloseTaskListener extends FXThreadTaskListener<Void, ProgressUpdate> {
+    private class BackupCloseTaskListener extends FXThreadTaskListener<Boolean, ProgressUpdate> {
+
         @Override
-        public void onFXThreadSuccess(Void o) {
+        public void onFXThreadSuccess(Boolean hasDeletedAll) {
+            String message;
+            if (hasDeletedAll)
+                message = "Backup foi apagado com sucesso.";
+            else
+                message = "Certos arquivos não puderam ser apagados por acesso negado. Apague " +
+                    "a pasta " + mBackup.get().getParentBackupFolder() + " manualmente para " +
+                    "liberar espaço em disco.";
+            FXDialog.showMessageDialog(mStage, "Deleção de backup completa", message);
+
             closeBackup();
         }
 

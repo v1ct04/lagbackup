@@ -5,25 +5,24 @@ import com.v1ct04.ces22.lagbackup.concurrent.ProgressPublisher;
 import com.v1ct04.ces22.lagbackup.concurrent.ProgressUpdate;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class BackupDeleteTransaction implements BackupTransaction<Void, ProgressUpdate> {
+public class BackupDeleteTransaction implements BackupTransaction<Boolean, ProgressUpdate> {
 
     private final Backup mBackup;
     private int mTotalFiles = 0;
+    private boolean mAllFilesDeleted;
 
     public BackupDeleteTransaction(Backup backup) {
         mBackup = backup;
     }
 
     @Override
-    public Void commit(ProgressPublisher<ProgressUpdate> progressPublisher) throws Exception {
+    public Boolean commit(ProgressPublisher<ProgressUpdate> progressPublisher) throws Exception {
         Path parentBackupFolder = mBackup.getParentBackupFolder();
         mTotalFiles = 0;
+        mAllFilesDeleted = true;
         Files.walkFileTree(parentBackupFolder, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
@@ -39,20 +38,30 @@ public class BackupDeleteTransaction implements BackupTransaction<Void, Progress
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                 throws IOException {
-                Files.delete(file);
                 fileProgressPublisher.publishProgress(file);
+                try {
+                    Files.delete(file);
+                } catch (AccessDeniedException ex) {
+                    ex.printStackTrace();
+                    mAllFilesDeleted = false;
+                }
                 return FileVisitResult.CONTINUE;
             }
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc)
                 throws IOException {
-                Files.delete(dir);
+                try {
+                    Files.delete(dir);
+                } catch (DirectoryNotEmptyException ex) {
+                    // some file inside could not be deleted, we can do nothing. just log
+                    ex.printStackTrace();
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
         Files.deleteIfExists(mBackup.getBackupFile());
 
-        return null;
+        return mAllFilesDeleted;
     }
 
     @Override
